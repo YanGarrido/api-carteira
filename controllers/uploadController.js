@@ -19,13 +19,14 @@ export const uploadImage = async (req, res) => {
     const formatoImagem = ["jpeg", "jpg", "png"].includes(foto_ext) ? foto_ext : "jpeg";
 
     const buffer = await sharp(req.file.buffer)
-  .resize({
-    width: 800,
-    fit: 'inside',
-    withoutEnlargement: true,
-  })
-  .toFormat(foto_ext === 'png' ? 'png' : 'jpeg', { quality: 70 })
-  .toBuffer();
+    .resize({
+      width: 300,
+      height: 300,
+      fit: 'inside',   // redimensiona para caber dentro de 300x300, mantendo proporção
+      withoutEnlargement: true // não aumenta imagem se for menor que 300x300
+    })
+    .toFormat(foto_ext || 'jpg')
+    .toBuffer();
 
     const imagemBase64 = buffer.toString("base64");
     const dataAtual = new Date();
