@@ -5,50 +5,54 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const uploadImage = async (req, res) => {
-  const { matricula, email, foto_ext, chave } = req.body;
+  const { matricula, email, chave, image, foto_ext } = req.body;
 
   if (chave !== process.env.CODIGO) {
     return res.status(403).json({ message: "Chave de acesso inválida." });
   }
 
-  if (!req.file) {
-    return res.status(400).json({ message: "Arquivo de imagem não enviado." });
+  if (!image) {
+    return res.status(400).json({ message: "Imagem em base64 não fornecida." });
   }
 
   try {
     const formatoImagem = ["jpeg", "jpg", "png"].includes(foto_ext) ? foto_ext : "jpeg";
-
-    const buffer = await sharp(req.file.buffer)
+    const base64Data = image
+    
+    const bufferOriginal = Buffer.from(base64Data, "base64");
+    
+    const bufferRedimensionado = await sharp(bufferOriginal)
     .resize({
-      width: 300,
-      height: 300,
+      width: 600,
+      //height: 300,
       fit: 'inside',   // redimensiona para caber dentro de 300x300, mantendo proporção
       withoutEnlargement: true // não aumenta imagem se for menor que 300x300
     })
     .toFormat(foto_ext || 'jpg')
+    .withMetadata({density: 150}) 
     .toBuffer();
 
-    const imagemBase64 = buffer.toString("base64");
+    const imagemRedimensionadaBase64 = bufferRedimensionado.toString("base64");
     const dataAtual = new Date();
 
     const [rows] = await db.query(
-      "SELECT COUNT(*) AS total FROM tblfoto WHERE intmatriculaid = ?",
+      "SELECT COUNT(*) AS total FROM tblfotoredimensionadadpi WHERE intmatriculaid = ?",
       [matricula]
     );
 
     if (rows[0].total > 0) {
       await db.query(
-        `UPDATE tblfoto 
+        `UPDATE tblfotoredimensionadadpi 
          SET stremail = ?, imgfoto = ?, strfoto = ?, imgext = ?, dtaregistro = ? 
          WHERE intmatriculaid = ?`,
-        [email, buffer, imagemBase64, formatoImagem, dataAtual, matricula]
+        [email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem, dataAtual, matricula]
       );
     } else {
       await db.query(
-        `INSERT INTO tblfoto 
+        `INSERT INTO tblfotoredimensionadadpi
          (dtaregistro, intmatriculaid, stremail, imgfoto, strfoto, imgext) 
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [dataAtual, matricula, email, buffer, imagemBase64, formatoImagem]
+        [dataAtual, matricula, email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem]
       );
     }
 

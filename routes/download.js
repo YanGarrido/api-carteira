@@ -8,7 +8,7 @@ router.get('/download/:matricula', async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT imgfoto, imgext FROM tblfoto WHERE intmatriculaid = ?',
+      'SELECT imgfoto, imgext FROM tblfotoredimensionadadpi WHERE intmatriculaid = ?',
       [matricula]
     );
 
