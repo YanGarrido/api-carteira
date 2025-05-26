@@ -15,11 +15,9 @@ export const downloadImage = async (req, res) => {
 
     const { imgfoto, imgext } = rows[0];
 
-    // Define o tipo de conteúdo e força o download
     res.setHeader('Content-Type', `image/${imgext}`);
     res.setHeader('Content-Disposition', `attachment; filename="foto_${matricula}.${imgext}"`);
 
-    // imgfoto é um buffer (blob), envie diretamente
     res.send(imgfoto);
   } catch (error) {
     console.error(error);

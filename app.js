@@ -7,7 +7,7 @@ import { serveSwagger, setupSwagger } from './swagger.js';
 dotenv.config();
 
 const app = express();
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "20mb" }));
 
 app.use('/api-docs', serveSwagger, setupSwagger);
 app.use('/api/upload', uploadRoutes);

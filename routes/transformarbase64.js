@@ -68,7 +68,6 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Rota POST para receber o upload da imagem
 router.post('/', upload.single('image'), transformImage);
 
 export default router;

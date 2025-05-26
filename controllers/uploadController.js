@@ -9,8 +9,7 @@ export const uploadImage = async (req, res) => {
 
   if (chave !== process.env.CODIGO) {
     return res.status(403).json({ message: "Chave de acesso inválida." });
-  }
-
+  }  
   if (!foto) {
     return res.status(400).json({ message: "Imagem em base64 não fornecida." });
   }
@@ -24,9 +23,8 @@ export const uploadImage = async (req, res) => {
     const bufferRedimensionado = await sharp(bufferOriginal)
     .resize({
       width: 600,
-      //height: 300,
-      fit: 'inside',   // redimensiona para caber dentro de 300x300, mantendo proporção
-      withoutEnlargement: true // não aumenta imagem se for menor que 300x300
+      fit: 'inside',   
+      withoutEnlargement: true 
     })
     .toFormat(foto_ext || 'jpg')
     .withMetadata({density: 150}) 
@@ -36,20 +34,20 @@ export const uploadImage = async (req, res) => {
     const dataAtual = new Date();
 
     const [rows] = await db.query(
-      "SELECT COUNT(*) AS total FROM tblfotoredimensionadadpi WHERE intmatriculaid = ?",
+      "SELECT COUNT(*) AS total FROM carteiras.tblfoto_redimensionada WHERE intmatriculaid = ?",
       [matricula]
     );
 
     if (rows[0].total > 0) {
       await db.query(
-        `UPDATE tblfotoredimensionadadpi 
+        `UPDATE carteiras.tblfoto_redimensionada 
          SET stremail = ?, imgfoto = ?, strfoto = ?, imgext = ?, dtaregistro = ? 
          WHERE intmatriculaid = ?`,
         [email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem, dataAtual, matricula]
       );
     } else {
       await db.query(
-        `INSERT INTO tblfotoredimensionadadpi
+        `INSERT INTO carteiras.tblfoto_redimensionada
          (dtaregistro, intmatriculaid, stremail, imgfoto, strfoto, imgext) 
          VALUES (?, ?, ?, ?, ?, ?)`,
         [dataAtual, matricula, email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem]

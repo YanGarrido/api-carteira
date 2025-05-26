@@ -12,7 +12,6 @@ export const transformImage = async (req, res) => {
 
     const base64Image = req.file.buffer.toString('base64');
 
-    // Salvar no banco de dados
     const [result] = await db.execute(
       'INSERT INTO imagens (nome_arquivo, imagem_base64) VALUES (?, ?)',
       [req.file.originalname, base64Image]
