@@ -5,19 +5,19 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const uploadImage = async (req, res) => {
-  const { matricula, email, chave, image, foto_ext } = req.body;
+  const { matricula, email, chave, foto, foto_ext } = req.body;
 
   if (chave !== process.env.CODIGO) {
     return res.status(403).json({ message: "Chave de acesso inválida." });
   }
 
-  if (!image) {
+  if (!foto) {
     return res.status(400).json({ message: "Imagem em base64 não fornecida." });
   }
 
   try {
     const formatoImagem = ["jpeg", "jpg", "png"].includes(foto_ext) ? foto_ext : "jpeg";
-    const base64Data = image
+    const base64Data = foto
     
     const bufferOriginal = Buffer.from(base64Data, "base64");
     

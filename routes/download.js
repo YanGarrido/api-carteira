@@ -1,33 +1,54 @@
 import express from 'express';
-import pool from '../db.js';
+import { downloadImage } from '../controllers/downloadController.js';
 
 const router = express.Router();
-
-router.get('/download/:matricula', async (req, res) => {
-  const { matricula } = req.params;
-
-  try {
-    const [rows] = await pool.query(
-      'SELECT imgfoto, imgext FROM tblfotoredimensionadadpi WHERE intmatriculaid = ?',
-      [matricula]
-    );
-
-    if (rows.length === 0) {
-      return res.status(404).json({ erro: 'Imagem não encontrada' });
-    }
-
-    const { imgfoto, imgext } = rows[0];
-
-    // Define o tipo de conteúdo e força o download
-    res.setHeader('Content-Type', `image/${imgext}`);
-    res.setHeader('Content-Disposition', `attachment; filename="foto_${matricula}.${imgext}"`);
-
-    // imgfoto é um buffer (blob), envie diretamente
-    res.send(imgfoto);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ erro: 'Erro ao baixar imagem' });
-  }
-});
+/**
+ * @swagger
+ * /download/{matricula}:
+ *   get:
+ *     summary: Faz download da imagem de um usuário pela matrícula
+ *     tags:
+ *       - Imagens
+ *     parameters:
+ *       - in: path
+ *         name: matricula
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da matrícula do usuário
+ *     responses:
+ *       200:
+ *         description: Imagem retornada com sucesso
+ *         content:
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Imagem não encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: Imagem não encontrada
+ *       500:
+ *         description: Erro ao baixar imagem
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: Erro ao baixar imagem
+ */
+router.get('/download/:matricula', downloadImage);
 
 export default router;
