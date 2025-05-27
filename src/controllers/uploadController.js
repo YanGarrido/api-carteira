@@ -4,16 +4,20 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const LARGURA_MAXIMA = 600;
+const DPI = 150;
 export const uploadImage = async (req, res) => {
   const { matricula, email, chave, foto, foto_ext } = req.body;
+  
+  if (!matricula || !email ||!chave || !foto || !foto_ext) {
+    console.warn("Tentativa de upload com campos ausentes",{body: req.body});
+    return res.status(400).json({ message: "Todos os campos são obrigatorios: matricula, email, chave, foto, foto_ext" });
+  }
 
   if (chave !== process.env.CODIGO) {
     return res.status(403).json({ message: "Chave de acesso inválida." });
   }  
-  if (!foto) {
-    return res.status(400).json({ message: "Imagem em base64 não fornecida." });
-  }
-
+  
   try {
     const formatoImagem = ["jpeg", "jpg", "png"].includes(foto_ext) ? foto_ext : "jpeg";
     const base64Data = foto
@@ -22,12 +26,12 @@ export const uploadImage = async (req, res) => {
     
     const bufferRedimensionado = await sharp(bufferOriginal)
     .resize({
-      width: 600,
+      width: LARGURA_MAXIMA,
       fit: 'inside',   
       withoutEnlargement: true 
     })
     .toFormat(foto_ext || 'jpg')
-    .withMetadata({density: 150}) 
+    .withMetadata({density: DPI}) 
     .toBuffer();
 
     const imagemRedimensionadaBase64 = bufferRedimensionado.toString("base64");
