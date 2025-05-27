@@ -54,11 +54,15 @@ export const uploadImage = async (req, res) => {
       );
     }
 
-    res.json({ sucesso: true, mensagem: `Imagem com a matricula: ${matricula}, salva com sucesso!` });
+    res.json({ sucesso: true, mensagem: `Imagem para a matrícula ${matricula} foi salva/atualizada com sucesso!` });
 
   } catch (error) {
-    console.error("Erro ao processar a imagem:", error);
-    res.status(500).json({ erro: error.mensagem });
+    console.error(`Erro ao processar a imagem para matrícula ${matricula}:`, error);
+    
+    if(error.mensage.includes("Input buffer contains unsupported image format") || error.message.includes("Input buffer is invalid")) {
+      return res.status(400).json({ message: "O arquivo fornecido não é uma imagem válida, está corrompido ou tem formato não suportado pelo servidor." });
+    }
+    res.status(500).json({ message: "Ocorreu um erro interno no servidor ao processar a imagem. Tente novamente mais tarde." });
   }
 };
 
