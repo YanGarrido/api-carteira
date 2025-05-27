@@ -6,7 +6,7 @@ const router = express.Router();
  * @swagger
  * /:
  *   post:
- *     summary: Faz o upload de uma imagem em base64, redimensiona e salva no banco
+ *     summary: Faz o upload de uma imagem em base64, redimensiona a imagem para ficar com uma largura maxima de 600 pixels e 150dpi de densidade e após isso salva no banco de dados
  *     tags:
  *       - Upload
  *     requestBody:

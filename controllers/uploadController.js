@@ -54,7 +54,7 @@ export const uploadImage = async (req, res) => {
       );
     }
 
-    res.json({ sucesso: true, mensagem: "Imagem salva com sucesso!" });
+    res.json({ sucesso: true, mensagem: `Imagem com a matricula: ${matricula}, salva com sucesso!` });
 
   } catch (error) {
     console.error("Erro ao processar a imagem:", error);
