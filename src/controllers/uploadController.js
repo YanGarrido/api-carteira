@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import db from "../db.js";
+import db from "../../db.js";
 import dotenv from "dotenv";
 
 dotenv.config();

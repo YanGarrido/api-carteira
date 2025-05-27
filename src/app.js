@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import uploadRoutes from './routes/upload.js';
 import fotoRoutes from './routes/download.js';
 import transformRoutes from './routes/transformarbase64.js';
-import { serveSwagger, setupSwagger } from './swagger.js';
+import { serveSwagger, setupSwagger } from '../swagger.js';
 dotenv.config();
 
 const app = express();
