@@ -20,7 +20,7 @@ export const uploadImage = async (req, res) => {
   
   try {
     const formatoImagem = ["jpeg", "jpg", "png"].includes(foto_ext) ? foto_ext : "jpeg";
-    const base64Data = foto
+    const base64Data = foto;
     
     const bufferOriginal = Buffer.from(base64Data, "base64");
     
@@ -66,8 +66,8 @@ export const uploadImage = async (req, res) => {
     
     if(error.mensage.includes("Input buffer contains unsupported image format") || error.message.includes("Input buffer is invalid")) {
       return res.status(400).json({ message: "O arquivo fornecido não é uma imagem válida, está corrompido ou tem formato não suportado pelo servidor." });
-    }
+    };
     res.status(500).json({ message: "Ocorreu um erro interno no servidor ao processar a imagem. Tente novamente mais tarde." });
-  }
+  };
 };
 
