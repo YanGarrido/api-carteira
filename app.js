@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import uploadRoutes from './routes/upload.js';
-import fotoRoutes from './routes/download.js';
-import transformRoutes from './routes/transformarbase64.js';
-import { serveSwagger, setupSwagger } from '../swagger.js';
+import uploadRoutes from './src/routes/upload.js';
+import fotoRoutes from './src/routes/download.js';
+import transformRoutes from './src/routes/transformarbase64.js';
+import { serveSwagger, setupSwagger } from './swagger.js';
 dotenv.config();
 
 const app = express();

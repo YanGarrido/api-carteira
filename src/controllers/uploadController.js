@@ -38,20 +38,20 @@ export const uploadImage = async (req, res) => {
     const dataAtual = new Date();
 
     const [rows] = await db.query(
-      "SELECT COUNT(*) AS total FROM carteiras.tblfoto_redimensionada WHERE intmatriculaid = ?",
+      "SELECT COUNT(*) AS total FROM carteiras.tblfotoredimensionada WHERE intmatriculaid = ?",
       [matricula]
     );
 
     if (rows[0].total > 0) {
       await db.query(
-        `UPDATE carteiras.tblfoto_redimensionada 
+        `UPDATE carteiras.tblfotoredimensionada 
          SET stremail = ?, imgfoto = ?, strfoto = ?, imgext = ?, dtaregistro = ? 
          WHERE intmatriculaid = ?`,
         [email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem, dataAtual, matricula]
       );
     } else {
       await db.query(
-        `INSERT INTO carteiras.tblfoto_redimensionada
+        `INSERT INTO carteiras.tblfotoredimensionada
          (dtaregistro, intmatriculaid, stremail, imgfoto, strfoto, imgext) 
          VALUES (?, ?, ?, ?, ?, ?)`,
         [dataAtual, matricula, email, bufferRedimensionado, imagemRedimensionadaBase64, formatoImagem]
@@ -59,6 +59,7 @@ export const uploadImage = async (req, res) => {
     }
 
     res.json({ sucesso: true, mensagem: `Imagem para a matrícula ${matricula} foi salva/atualizada com sucesso!` });
+    console.log(`Imagem para a matrícula ${matricula} foi redimensionada com sucesso!`);
 
   } catch (error) {
     console.error(`Erro ao processar a imagem para matrícula ${matricula}:`, error);
