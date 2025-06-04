@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json({ limit: "20mb" }));
 
 app.use('/api-docs', serveSwagger, setupSwagger);
-app.use('/api/upload', uploadRoutes);
+app.use('/api', uploadRoutes);
 app.use('/api/foto', fotoRoutes);
 app.use('/api/transformar', transformRoutes);
 

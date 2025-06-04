@@ -4,9 +4,9 @@ import { uploadImage } from "../controllers/uploadController.js";
 const router = express.Router();
 /**
  * @swagger
- * /:
+ * /upload:
  *   post:
- *     summary: Faz o upload de uma imagem em base64, redimensiona a imagem para ficar com uma largura maxima de 600 pixels e 150dpi de densidade e após isso salva no banco de dados
+ *     summary: Faz o upload de uma imagem em base64, redimensiona a imagem para ficar com uma largura máxima de 600 pixels e 150dpi de densidade e após isso salva no banco de dados
  *     tags:
  *       - Upload
  *     requestBody:
@@ -19,7 +19,7 @@ const router = express.Router();
  *               - matricula
  *               - email
  *               - chave
- *               - image
+ *               - foto
  *               - foto_ext
  *             properties:
  *               matricula:
@@ -32,17 +32,17 @@ const router = express.Router();
  *               chave:
  *                 type: string
  *                 description: Chave de autenticação (definida em .env)
- *               image:
+ *               foto:
  *                 type: string
  *                 format: base64
  *                 description: Imagem em base64 (sem cabeçalho data URI)
  *               foto_ext:
  *                 type: string
- *                 enum: [jpg, jpeg, png]
+ *                 enum: [jpeg, jpg, png]
  *                 example: jpg
  *     responses:
  *       200:
- *         description: Imagem salva com sucesso
+ *         description: Imagem salva/atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -53,9 +53,9 @@ const router = express.Router();
  *                   example: true
  *                 mensagem:
  *                   type: string
- *                   example: Imagem salva com sucesso!
+ *                   example: Imagem para a matrícula 12345 foi salva/atualizada com sucesso!
  *       400:
- *         description: Erro de validação
+ *         description: Erro de validação ou formato de imagem inválido
  *         content:
  *           application/json:
  *             schema:
@@ -63,9 +63,9 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Imagem em base64 não fornecida.
+ *                   example: "Todos os campos são obrigatórios: matricula, email, chave, foto, foto_ext"
  *       403:
- *         description: Chave inválida
+ *         description: Chave de acesso inválida
  *         content:
  *           application/json:
  *             schema:
@@ -81,11 +81,12 @@ const router = express.Router();
  *             schema:
  *               type: object
  *               properties:
- *                 erro:
+ *                 message:
  *                   type: string
- *                   example: Erro interno no servidor
+ *                   example: Ocorreu um erro interno no servidor ao processar a imagem. Tente novamente mais tarde.
  */
 
-router.post("/", uploadImage);
+
+router.post("/upload", uploadImage);
 
 export default router;
