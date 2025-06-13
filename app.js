@@ -1,8 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import uploadRoutes from './src/routes/upload.js';
-import fotoRoutes from './src/routes/download.js';
-import transformRoutes from './src/routes/transformarbase64.js';
+import registerRoutes from './src/routes/register.js';
 import { serveSwagger, setupSwagger } from './swagger.js';
 dotenv.config();
 
@@ -10,9 +9,7 @@ const app = express();
 app.use(express.json({ limit: "20mb" }));
 
 app.use('/api-docs', serveSwagger, setupSwagger);
-app.use('/api', uploadRoutes);
-app.use('/api/foto', fotoRoutes);
-app.use('/api/transformar', transformRoutes);
+app.use('/api', uploadRoutes, registerRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
