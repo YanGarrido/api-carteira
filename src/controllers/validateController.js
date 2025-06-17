@@ -127,10 +127,25 @@ export const validateUserAndSendCode = async (req, res) => {
     const turno = dados.strtipo === 'Aluno' ? (dados.strturno || '') : dados.strtipo;
     const nascimentoFormatado = new Date(dados.dtanascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 
-
-
-
+    res.status(200).json({
+      status: 200,
+      nome: dados.strnome,
+      validade: dados.dtavalidadecarteira,
+      matricula: dados.strcodigo,
+      curso: curso,
+      codigo_ativacao: codigoAtivacao,
+      codigo_carteira: codigoCarteira,
+      url_validacao: urlValidacao,
+      email: dados.stremail,
+      nascimento: nascimentoFormatado,
+      turno: turno
+    });
   } catch (error) {
+    console.error(`Erro no processo de validação para matrícula ${matricula}:`, error)
     
+    if(error.code === 'EENVELOPE' || error.command?.includes('SMTP')) {
+      return res.status(500).json({ message: "Erro ao tentar enviar o e-mail de ativação. Verifique se o endereço está correto ou se o servidor de e-mail está operacional." });
+    }
+    res.status(500),json({ message: "Ocorreu um erro interno no servidor durante a validação."})
   }
 }
