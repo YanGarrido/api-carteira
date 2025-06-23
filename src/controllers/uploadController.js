@@ -16,10 +16,6 @@ export const uploadImage = async (req, res) => {
     console.warn("Tentativa de upload com campos ausentes",{ body: req.body });
     return res.status(400).json({ message: "Todos os campos são obrigatorios: matricula, email, chave, foto, foto_ext" });
   }
-
-  if (chave !== process.env.CODIGO) {
-    return res.status(403).json({ message: "Chave de acesso inválida." });
-  }
   
   const extensaoNormalizada = foto_ext.toLowerCase();
   if(!EXTENSOES_PERMITIDAS.includes(extensaoNormalizada)) {
@@ -27,6 +23,14 @@ export const uploadImage = async (req, res) => {
   }
   
   try {
+    const [authRows] = await db.query(
+      `SELECT intaplicacaoid FROM tblaplicacoes WHERE strchave = ? AND NOW() BETWEEN dtaativacao AND dtavalidade`, [chave]
+    );
+    
+    if(authRows.length === 0) {
+      return res.status(403).json({ message: "Chave de acesso inválida, expirada ou inativa." });
+    }
+    
     const base64Data = foto;
     const bufferOriginal = Buffer.from(base64Data, "base64");
     
