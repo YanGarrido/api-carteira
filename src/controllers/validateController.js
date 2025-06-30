@@ -6,7 +6,7 @@ dotenv.config();
 
 const TABELA_USUARIOS = "carteiras.tblusuarios";
 const TABELA_APLICACOES = "carteiras.tblaplicacoes";
-const TABELA_CONFIG = "carteiras.tblconfiguracoes";
+const TABELA_CONFIG = "carteiras.tblcartconfig";
 
 const calcularCodigoAtivacao = (matricula, baseAtivacao) => {
   const agora = new Date();
@@ -51,7 +51,7 @@ export const validateUserAndSendCode = async (req, res) => {
     const query = `
     SELECT
       u.strnome,
-      u.dtavalidadecarteira,
+      u.dtavalidade,
       u.strcodigo,
       u.strtipo,
       u.strcurso,
@@ -68,7 +68,7 @@ export const validateUserAndSendCode = async (req, res) => {
       u.strcodigo = ? AND u.stremail = ?
     `;
 
-    const [rows] = await db.query(simpleQuery, [matricula, email]);
+    const [rows] = await db.query(query, [matricula, email]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "Usuário não encontrado!" });
@@ -146,6 +146,6 @@ export const validateUserAndSendCode = async (req, res) => {
     if(error.code === 'EENVELOPE' || error.command?.includes('SMTP')) {
       return res.status(500).json({ message: "Erro ao tentar enviar o e-mail de ativação. Verifique se o endereço está correto ou se o servidor de e-mail está operacional." });
     }
-    res.status(500),json({ message: "Ocorreu um erro interno no servidor durante a validação."})
+    res.status(500).json({ message: "Ocorreu um erro interno no servidor durante a validação."})
   }
 }

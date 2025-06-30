@@ -41,7 +41,7 @@ export const registerDevice = async (req, res) => {
     ]);
 
     const [verificationRows] = await db.query(
-      `SELECT COUNT(*) AS total FROM ${TABELA_REGISTROS} WHERE intmatriculaid = ? AND strimeino = ? AND dtaregistro = ?`, [matricula, imeiNo, dataAtual]);
+      `SELECT COUNT(*) AS total FROM ${TABELA_REGISTROS} WHERE intmatriculaid = ? AND strimeino = ?`, [matricula, imeiNo]);
     
     if (verificationRows[0].total > 0){
       console.log(`Dispositivo registrado com sucesso para a matrícula ${matricula}.`);
