@@ -85,7 +85,7 @@ export const validateUserAndSendCode = async (req, res) => {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_PORT == 465, // true para porta 465 (SSL), false para outras (TLS)
+      secure: process.env.SMTP_PORT == 465,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -93,9 +93,9 @@ export const validateUserAndSendCode = async (req, res) => {
     });
 
     const mailOptions = {
-      from: `"CEST" <${process.env.SMTP_USER}>`, // Remetente
-      to: dados.stremail, // Destinatário (e-mail do usuário)
-      subject: "Ativação do Documento de Identificação Digital do CEST", // Assunto
+      from: `"CEST" <${process.env.SMTP_USER}>`, 
+      to: dados.stremail, 
+      subject: "Ativação do Documento de Identificação Digital do CEST", 
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
           <h2 style="color: #0056b3;">Ativação do Documento Digital - CEST</h2>
