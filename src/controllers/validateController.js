@@ -51,7 +51,7 @@ export const validateUserAndSendCode = async (req, res) => {
     const query = `
     SELECT
       u.strnome,
-      u.dtavalidade,
+      c.dtavalidadecarteira,
       u.strcodigo,
       u.strtipo,
       u.strcurso,
@@ -126,15 +126,23 @@ export const validateUserAndSendCode = async (req, res) => {
     const curso = dados.strtipo === 'Aluno' ? dados.strcurso : dados.strtipo;
     const turno = dados.strtipo === 'Aluno' ? (dados.strturno || '') : dados.strtipo;
     const nascimentoFormatado = new Date(dados.dtanascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+    
+    console.log('--- DEBUG DE TIPOS ---');
+    console.log('Tipo de matricula (dados.strcodigo):', typeof dados.strcodigo);
+    console.log('Tipo de codigoAtivacao:', typeof codigoAtivacao);
+    console.log('Tipo de codigoCarteira:', typeof codigoCarteira);
+    console.log('----------------------');
 
     res.status(200).json({
       status: 200,
       nome: dados.strnome,
       validade: dados.dtavalidadecarteira,
-      matricula: dados.strcodigo,
+      matricula: String(dados.strcodigo),
       curso: curso,
-      codigo_ativacao: codigoAtivacao,
-      codigo_carteira: codigoCarteira,
+      
+      codigo_ativacao: String(codigoAtivacao),
+      codigo_carteira: String(codigoCarteira),
+      
       url_validacao: urlValidacao,
       email: dados.stremail,
       nascimento: nascimentoFormatado,
