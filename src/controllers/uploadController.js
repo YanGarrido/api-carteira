@@ -44,7 +44,8 @@ export const uploadImage = async (req, res) => {
     .withMetadata({density: DPI}) 
     .toBuffer();
 
-    const imagemRedimensionadaBase64 = bufferRedimensionado.toString("base64");
+    const bufferFinal = bufferRedimensionado.length > bufferOriginal.length ? bufferOriginal : bufferRedimensionado;
+    const imagemFinalBase64 = bufferFinal.toString("base64");
     const dataAtual = new Date();
 
     const [rows] = await db.query(
@@ -57,14 +58,14 @@ export const uploadImage = async (req, res) => {
         `UPDATE ${TABELA_FOTOS} 
          SET stremail = ?, imgfoto = ?, strfoto = ?, imgext = ?, dtaregistro = ? 
          WHERE intmatriculaid = ?`,
-        [email, bufferRedimensionado, imagemRedimensionadaBase64, extensaoNormalizada, dataAtual, matricula]
+        [email, bufferFinal, imagemFinalBase64, extensaoNormalizada, dataAtual, matricula]
       );
     } else {
       await db.query(
         `INSERT INTO ${TABELA_FOTOS}
          (dtaregistro, intmatriculaid, stremail, imgfoto, strfoto, imgext) 
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [dataAtual, matricula, email, bufferRedimensionado, imagemRedimensionadaBase64, extensaoNormalizada]
+        [dataAtual, matricula, email, bufferFinal, imagemFinalBase64, extensaoNormalizada]
       );
     }
 
