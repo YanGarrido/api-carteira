@@ -121,18 +121,10 @@ export const validateUserAndSendCode = async (req, res) => {
     await transporter.sendMail(mailOptions);
     console.log(`E-mail de ativação enviado com sucesso para: ${dados.stremail}`);
 
-
-
     const curso = dados.strtipo === 'Aluno' ? dados.strcurso : dados.strtipo;
     const turno = dados.strtipo === 'Aluno' ? (dados.strturno || '') : dados.strtipo;
     const nascimentoFormatado = new Date(dados.dtanascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
     
-    console.log('--- DEBUG DE TIPOS ---');
-    console.log('Tipo de matricula (dados.strcodigo):', typeof dados.strcodigo);
-    console.log('Tipo de codigoAtivacao:', typeof codigoAtivacao);
-    console.log('Tipo de codigoCarteira:', typeof codigoCarteira);
-    console.log('----------------------');
-
     res.status(200).json({
       status: 200,
       nome: dados.strnome,
